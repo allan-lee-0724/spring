@@ -33,4 +33,4 @@ build/
 .vscode/
 
 ## Credential ###
-/src/main/resources
+*.properties

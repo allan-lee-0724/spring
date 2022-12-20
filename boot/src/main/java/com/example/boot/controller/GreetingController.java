@@ -12,18 +12,20 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.example.boot.entities.User;
+
+
+// import com.example.boot.entities.User;
 
 @RestController
-public class GreeingController {
+public class GreetingController {
     
-    private static List<User> users;
-    private int count = 1;
+    // private static List<User> users;
+    // private int count = 1;
 
 
-    public GreeingController(){
-        users = new ArrayList<>();
-    }
+    // public GreetingController(){
+    //     users = new ArrayList<>();
+    // }
 
     @GetMapping("/hello")
     public String helloWorld(){
@@ -35,17 +37,17 @@ public class GreeingController {
         return "Hello " + name;
     }
 
-    @PostMapping("/user")
-    public User addUser(@RequestBody User user){
-        user.setId(count);
-        users.add(user);
-        count++;
-        return user;
-    }
+    // @PostMapping("/user")
+    // public User addUser(@RequestBody User user){
+    //     user.setId(count);
+    //     users.add(user);
+    //     count++;
+    //     return user;
+    // }
 
-    @GetMapping("/user/{index}")
-    public ResponseEntity<User> getUser(@PathVariable int index){
-        return new ResponseEntity<>(users.get(index), HttpStatus.OK);
-    }
+    // @GetMapping("/user/{index}")
+    // public ResponseEntity<User> getUser(@PathVariable int index){
+    //     return new ResponseEntity<>(users.get(index), HttpStatus.OK);
+    // }
 
 }
