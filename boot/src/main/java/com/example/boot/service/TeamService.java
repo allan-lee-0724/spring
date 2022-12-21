@@ -4,6 +4,8 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import com.example.boot.entities.Team;
@@ -30,12 +32,17 @@ public class TeamService {
         if(possibleTeam.isPresent()){
             return possibleTeam.get();
         } else{
-            return new Team();
+            throw new EntityNotFound("Team not found");
         }
     }
 
     public List<Team> getAllTeams(){
-        return this.teamDao.findAll();
+        List<Team> teams = this.teamDao.findAll();
+        if(teams.size() != 0){
+            return teams;
+        } else{
+            throw new EntityNotFound("No teams were found");
+        }
     }
 
     public String createTeam(Team team){
