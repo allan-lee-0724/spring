@@ -25,12 +25,7 @@ public class PlayerController {
 
     @GetMapping("/player/id/{id}")
     public ResponseEntity<Player> getPlayerById(@PathVariable int id){
-        Player player = this.playerService.findPlayerById(id);
-        if(player.getPlayerId() != 0){
-            return new ResponseEntity<>(player, HttpStatus.OK);
-        } else{
-            return new ResponseEntity<>(player, HttpStatus.NOT_FOUND);
-        }
+        return new ResponseEntity<>(this.playerService.findPlayerById(id), HttpStatus.OK);
     }
 
     @GetMapping("/player/{name}")

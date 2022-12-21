@@ -25,12 +25,7 @@ public class TeamController {
 
     @GetMapping("/team/id/{id}")
     public ResponseEntity<Team> getTeamById(@PathVariable int id){ // using ResponseEntity catches the empty object and then we can set 404 for it
-        Team team = this.teamService.getTeamById(id); // getTeamById will return a team for us
-        if(team.getTeamId() != 0){ // check to see if team has an initialized ID
-            return new ResponseEntity<>(team, HttpStatus.OK); // return the team with a success message if we got data
-        } else{
-            return new ResponseEntity<>(team, HttpStatus.NOT_FOUND); // return an empty team with a not found status if necessary
-        }
+        return new ResponseEntity<>(this.teamService.getTeamById(id), HttpStatus.OK);
     }
 
     @GetMapping("/team/{name}")

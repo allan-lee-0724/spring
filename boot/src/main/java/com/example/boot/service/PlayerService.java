@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.example.boot.entities.Player;
+import com.example.boot.exceptions.EntityNotFound;
 import com.example.boot.repository.PlayerDao;
 
 @Service
@@ -20,7 +21,7 @@ public class PlayerService {
         if(possiblePlayer.isPresent()){
             return possiblePlayer.get();
         } else{
-            return new Player();
+            throw new EntityNotFound("Player not found");
         }
     }
 
