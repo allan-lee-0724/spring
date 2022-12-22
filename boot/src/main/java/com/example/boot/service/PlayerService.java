@@ -30,12 +30,17 @@ public class PlayerService {
         if(possiblePlayer.isPresent()){
             return possiblePlayer.get();
         } else{
-            return new Player();
+            throw new EntityNotFound("Player not found");
         }
     }
 
     public List<Player> findAllPlayers(){
-        return this.playerDao.findAll();
+        List<Player> players = this.playerDao.findAll();
+        if(players.size() != 0){
+            return players;
+        } else{
+            throw new EntityNotFound("No players found in the database");
+        }
     }
 
     public String createPlayer(Player player){
@@ -48,7 +53,7 @@ public class PlayerService {
         if(rowCount == 1){
             return "Player updated successfully";
         } else{
-            return "Something went wrong";
+            throw new EntityNotFound("Could not update player");
         }
     }
 

@@ -55,7 +55,7 @@ public class TeamService {
         if(result == 1){
             return "team updated successfully";
         } else{
-            return "something went wrong";
+            throw new EntityNotFound("Could not update player");
         }
     }
 

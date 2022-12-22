@@ -2,11 +2,13 @@ package com.example.boot.controller;
 
 import java.util.List;
 
+import org.postgresql.util.PSQLException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -15,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.boot.entities.Player;
+import com.example.boot.exceptions.EntityNotFound;
 import com.example.boot.service.PlayerService;
 
 @RestController
@@ -23,6 +26,21 @@ public class PlayerController {
     @Autowired
     private PlayerService playerService;
 
+    @ExceptionHandler(EntityNotFound.class)
+    public ResponseEntity<String> entityNotFound(EntityNotFound e){
+        return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler(PSQLException.class)
+    public ResponseEntity<String> sqlIssue(PSQLException e){
+        return new ResponseEntity<>(e.getMessage(), HttpStatus.UNPROCESSABLE_ENTITY);
+    }
+
+    @ExceptionHandler(EmptyResultDataAccessException.class)
+    public ResponseEntity<String> deleteFailed(EmptyResultDataAccessException e){
+        return new ResponseEntity<>("Could not delete player", HttpStatus.BAD_REQUEST);
+    }
+
     @GetMapping("/player/id/{id}")
     public ResponseEntity<Player> getPlayerById(@PathVariable int id){
         return new ResponseEntity<>(this.playerService.findPlayerById(id), HttpStatus.OK);
@@ -30,48 +48,27 @@ public class PlayerController {
 
     @GetMapping("/player/{name}")
     public ResponseEntity<Player> getPlayerByName(@PathVariable String name){
-        Player player = this.playerService.findByPlayerName(name);
-        if(player.getPlayerId() != 0){
-            return new ResponseEntity<>(player, HttpStatus.OK);
-        } else{
-            return new ResponseEntity<>(player, HttpStatus.NOT_FOUND);
-        }
+        return new ResponseEntity<>(this.playerService.findByPlayerName(name), HttpStatus.OK);
     }
 
     @GetMapping("/players")
     public ResponseEntity<List<Player>> getAllPlayers(){
-        List<Player> players = this.playerService.findAllPlayers();
-        if(players.size() != 0){
-            return new ResponseEntity<>(players, HttpStatus.OK);
-        } else{
-            return new ResponseEntity<>(players, HttpStatus.NOT_FOUND);
-        }
+        return new ResponseEntity<>(this.playerService.findAllPlayers(), HttpStatus.OK);
     }
 
     @PostMapping("/player")
     public ResponseEntity<String> createPlayer(@RequestBody Player player){
-        String message = this.playerService.createPlayer(player);
-        return new ResponseEntity<>(message, HttpStatus.CREATED);
+        return new ResponseEntity<>(this.playerService.createPlayer(player), HttpStatus.CREATED);
     }
 
     @PatchMapping("/player")
     public ResponseEntity<String> updatePlayer(@RequestBody Player player){
-        String message = this.playerService.updatePlayer(player);
-        if(message.length() == 27){
-            return new ResponseEntity<>(message, HttpStatus.OK);
-        } else{
-            return new ResponseEntity<>(message, HttpStatus.BAD_REQUEST);
-        }
+        return new ResponseEntity<>(this.playerService.updatePlayer(player), HttpStatus.OK);
     }
 
     @DeleteMapping("/player/{id}")
     public ResponseEntity<String> deletePlayer(@PathVariable int id){
-        try{
-            String message = this.playerService.deletePlayerById(id);
-            return new ResponseEntity<>(message, HttpStatus.OK);
-        } catch (EmptyResultDataAccessException e){
-            return new ResponseEntity<>("COULD NOT DELETE PLAYER", HttpStatus.BAD_REQUEST);
-        }
+        return new ResponseEntity<>(this.playerService.deletePlayerById(id), HttpStatus.OK);
     }
 
 
