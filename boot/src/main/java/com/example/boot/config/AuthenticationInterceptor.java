@@ -7,6 +7,8 @@ import javax.servlet.http.HttpSession;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
 
+import com.example.boot.exceptions.AuthenticationFailed;
+
 @Component
 public class AuthenticationInterceptor implements HandlerInterceptor{
 
@@ -16,7 +18,9 @@ public class AuthenticationInterceptor implements HandlerInterceptor{
         HttpSession session = request.getSession();
         if(session.getAttribute("user") != null){
             return true;
-        } else return false;
+        } else{
+            throw new AuthenticationFailed("Please login before interacting with application");
+        }
     }
     
     

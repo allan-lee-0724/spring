@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.boot.entities.Team;
+import com.example.boot.exceptions.AuthenticationFailed;
 import com.example.boot.exceptions.EntityNotFound;
 import com.example.boot.service.TeamService;
 
@@ -29,6 +30,12 @@ public class TeamController {
     
     @Autowired
     private TeamService teamService;
+
+    @ExceptionHandler(AuthenticationFailed.class)
+    public ResponseEntity<String> authenticationFailed(AuthenticationFailed e){
+        teamLogger.error(e.getLocalizedMessage(), e);
+        return new ResponseEntity<>(e.getMessage(), HttpStatus.UNAUTHORIZED);
+    }
 
     @ExceptionHandler(EntityNotFound.class)
     public ResponseEntity<String> entityNotFound(EntityNotFound e){
