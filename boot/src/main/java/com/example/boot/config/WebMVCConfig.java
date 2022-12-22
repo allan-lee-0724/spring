@@ -2,6 +2,7 @@ package com.example.boot.config;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.Ordered;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
@@ -10,6 +11,8 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
  * implementation. In this case, by implementing WebMvcConfigurer, we are adding our custom made
  * handlerInterceptor to our Spring Web module, and this will allow Spring to know whether to execute the
  * prehandle/posthandle methods as defined in our custom interceptor
+ * 
+ * MVC = Model View Controller
  */
 
 @Configuration
@@ -17,6 +20,10 @@ public class WebMVCConfig implements WebMvcConfigurer{ // Spring web is the new 
     
     @Autowired
     private BasicInterceptor basicInterceptor;
+    @Autowired
+    private LoggingInterceptor loggingInterceptor;
+    @Autowired
+    private AuthenticationInterceptor authenticationInterceptor;
 
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
@@ -24,7 +31,9 @@ public class WebMVCConfig implements WebMvcConfigurer{ // Spring web is the new 
          * addInterceptor tells Spring to keep track of the basic Interceptor that is created at runtime
          * addPathPatterns tells Spring what http url patterns should be intercepted by our interceptor
          */
-        registry.addInterceptor(basicInterceptor).addPathPatterns("/**");
+        registry.addInterceptor(basicInterceptor).addPathPatterns("/**").order(Ordered.LOWEST_PRECEDENCE);
+        registry.addInterceptor(loggingInterceptor).addPathPatterns("/**").order(Ordered.HIGHEST_PRECEDENCE);
+        registry.addInterceptor(authenticationInterceptor).addPathPatterns("/api/**").order(1);
     }
 
     

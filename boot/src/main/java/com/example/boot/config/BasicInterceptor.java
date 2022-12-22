@@ -32,6 +32,14 @@ public class BasicInterceptor implements HandlerInterceptor {
         System.out.println("BasicInterceptor postHandle executed");
     }
 
+
+    @Override
+    public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler, @Nullable Exception ex) throws Exception {
+        System.out.println("BasicInterceptor afterCompletion executed");
+    }
+
+    
+
     
     
     

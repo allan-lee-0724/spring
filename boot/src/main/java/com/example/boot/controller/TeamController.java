@@ -1,7 +1,8 @@
 package com.example.boot.controller;
 
-import org.hibernate.cache.spi.support.EntityReadOnlyAccess;
 import org.postgresql.util.PSQLException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.http.HttpStatus;
@@ -23,52 +24,58 @@ import java.util.List;
 
 @RestController // this tells Spring we are using this class as a controller to handle http requests and responses
 public class TeamController {
+
+    private static Logger teamLogger = LoggerFactory.getLogger(TeamController.class);
     
     @Autowired
     private TeamService teamService;
 
     @ExceptionHandler(EntityNotFound.class)
     public ResponseEntity<String> entityNotFound(EntityNotFound e){
+        teamLogger.error(e.getLocalizedMessage(), e);
         return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
     }
 
     @ExceptionHandler(PSQLException.class)
     public ResponseEntity<String> sqlIssue(PSQLException e){
+        teamLogger.error(e.getLocalizedMessage(), e);
         return new ResponseEntity<>(e.getMessage(), HttpStatus.UNPROCESSABLE_ENTITY);
     }
 
     @ExceptionHandler(EmptyResultDataAccessException.class)
     public ResponseEntity<String> deleteFailed(EmptyResultDataAccessException e){
+        teamLogger.error(e.getLocalizedMessage(), e);
         return new ResponseEntity<>("Could not delete team",HttpStatus.BAD_REQUEST);
     }
 
-    @GetMapping("/team/id/{id}")
-    public ResponseEntity<Team> getTeamById(@PathVariable int id){ // using ResponseEntity catches the empty object and then we can set 404 for it
+    @GetMapping("api/team/id/{id}")
+    public ResponseEntity<Team> getTeamById(@PathVariable int id){ 
         return new ResponseEntity<>(this.teamService.getTeamById(id), HttpStatus.OK);
     }
 
-    @GetMapping("/team/{name}")
+    @GetMapping("api/team/{name}")
     public ResponseEntity<Team> getTeamByName(@PathVariable String name){
         return new ResponseEntity<>(this.teamService.getTeamByname(name), HttpStatus.OK);
     }
 
-    @GetMapping("/team")
+    @GetMapping("api/team")
     public ResponseEntity<List<Team>> getAllTeams(){
+        System.out.println("Get all teams");
         return new ResponseEntity<>(this.teamService.getAllTeams(), HttpStatus.OK);
         
     }
 
-    @PostMapping("/team")
+    @PostMapping("api/team")
     public ResponseEntity<String> createTeam(@RequestBody Team team){
         return new ResponseEntity<>(this.teamService.createTeam(team), HttpStatus.CREATED);
     }
 
-    @PatchMapping("/team")
+    @PatchMapping("api/team")
     public ResponseEntity<String> updateTeam(@RequestBody Team team){
         return new ResponseEntity<>(this.teamService.updateTeam(team.getTeamName(), team.getTeamId()), HttpStatus.OK);
     }
 
-    @DeleteMapping("/team/{id}")
+    @DeleteMapping("api/team/{id}")
     public ResponseEntity<String> deleteTeamById(@PathVariable int id){
         return new ResponseEntity<>(this.teamService.deleteTeam(id), HttpStatus.OK);
     }
