@@ -63,7 +63,7 @@ public class PlayerController {
     @GetMapping("api/player/{name}")
     public ResponseEntity<Player> getPlayerByName(@PathVariable String name){
         return new ResponseEntity<>(this.playerService.findByPlayerName(name), HttpStatus.OK);
-    }
+    } 
 
     @GetMapping("api/player")
     public ResponseEntity<List<Player>> getAllPlayers(){
