@@ -24,7 +24,7 @@ services:
     container_name: logging-promtail
     volumes:
       - ./configs/promtail-config.yml:/etc/promtail/promtail-config.yml # configuration I made:config saved in container
-      - ../logs/staticLogs.logs:/var/log/staticLogs.logs # log we want to save:log in promtail
+      - ./logs/staticLogs.log:/var/log/staticLogs.log # log we want to save:log in promtail
     command: "--config.file=/etc/promtail/promtail-config.yml"
 
 
