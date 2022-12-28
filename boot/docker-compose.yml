@@ -39,6 +39,17 @@ services:
     depends_on:
       - loki # ensures loki is setup before Grafana tries to interface with it
 
+  prometheus:
+    image: prom/prometheus:latest # think of this as your database for your metrics over time
+    ports:
+      - 9090:9090
+    volumes:
+      # - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
+      - ./configs/prometheus-config.yml:/etc/prometheus/prometheus-config.yml # passing the directory instead of just the config file for prometheus
+    container_name: logging-prometheus
+    command: "--config.file=/etc/prometheus/prometheus-config.yml" # We need to tell Prometheus what to target
+
+
 
 
  
