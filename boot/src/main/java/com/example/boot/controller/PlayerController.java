@@ -85,5 +85,14 @@ public class PlayerController {
         return new ResponseEntity<>(this.playerService.deletePlayerById(id), HttpStatus.OK);
     }
 
+    /*
+     * adding a route that returns 500 for the sake of measuring SLIs
+     */
+
+    @GetMapping("/uhoh")
+    public ResponseEntity<String> returnFiveHundred(){
+        return new ResponseEntity<String>("returning 500 status code", HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
 
 }
